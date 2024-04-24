@@ -6,7 +6,7 @@ const packageJson = require('./package.json');
 
 module.exports = () => ({
   output: {
-    publicPath: 'http://localhost:8082/',
+    publicPath: 'https://tone4hook.github.io/vista-dictionary/',
   },
 
   resolve: {
