@@ -10,10 +10,57 @@
         <Loading :isLoading="wordDefinitionStore.isLoading" />
       </div>
     </div>
-    <dictionary-card
-      :show-no-definitions="showNoDefinitions"
-      :word-definitions="wordDefinitionStore.wordDefinitions"
-    />
+    <div
+      v-if="
+        wordDefinitionStore.wordDefinitions &&
+        wordDefinitionStore.wordDefinitions.length
+      "
+    >
+      <div
+        class="card text-white bg-dark mt-3"
+        v-for="(wordDefinition, index) in wordDefinitionStore.wordDefinitions"
+        :key="index"
+      >
+        <div class="card-header">Definition</div>
+        <div class="card-body">
+          <h4 class="card-title">{{ wordDefinition.word }}</h4>
+          <p class="card-text">{{ wordDefinition.phonetic }}</p>
+          <p class="card-text">{{ wordDefinition.origin }}</p>
+          <div
+            v-if="
+              wordDefinition.phonetics &&
+              wordDefinition.phonetics.length > 0 &&
+              wordDefinition.phonetics[0].audio
+            "
+          >
+            <audio controls :key="wordDefinition.phonetics[0].audio">
+              <source
+                :src="wordDefinition.phonetics[0].audio"
+                type="audio/mpeg"
+              />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+          <div v-for="(meaning, index) in wordDefinition.meanings" :key="index">
+            <p class="card-text my-2 text-primary font-monospace">
+              {{ meaning.partOfSpeech }}
+            </p>
+            <div
+              v-for="(definition, index) in meaning.definitions"
+              :key="index"
+            >
+              <p class="card-text fs-5">{{ definition.definition }}</p>
+              <p class="card-text text-info fst-italic mt-1 mb-3">
+                {{ definition.example }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else-if="showNoDefinitions">
+      <p class="fs-4">No definitions found</p>
+    </div>
   </div>
 </template>
 
@@ -22,7 +69,6 @@ import { ref, onMounted, watch, computed, defineProps } from 'vue';
 import { debounce } from 'lodash';
 import { useWordDefinitionStore } from '@/stores';
 import Loading from '@/components/Loading.vue';
-import DictionaryCard from '@/components/DictionaryCard.vue';
 
 interface Props {
   word: string;
@@ -57,7 +103,6 @@ onMounted(fetchDefinition);
 watch(
   () => props.word,
   (newVal, oldVal) => {
-    console.log('word', newVal, oldVal);
     if (newVal !== oldVal) {
       fetchDefinition();
     }

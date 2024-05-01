@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { getWikiDefinition, getWordDefinition } from '@/api/requests';
 import { ApiResponse } from '@/api/types';
 import { ErrorStore, WordDefinitionStore } from '@/stores/types';
