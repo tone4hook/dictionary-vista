@@ -87,7 +87,21 @@ module.exports = (env, argv) => {
           './Vista': './src/pages/Vista.vue',
           './WordDefinitions': './src/components/WordDefinitions.vue',
         },
-        shared: packageJson.dependencies,
+        shared: {
+          vue: {
+            singleton: true,
+            requiredVersion: packageJson.dependencies.vue,
+          },
+          'vue-router': {
+            singleton: true,
+            requiredVersion: packageJson.dependencies['vue-router'],
+          },
+          pinia: {
+            singleton: true,
+            requiredVersion: packageJson.dependencies.pinia,
+          },
+          bootstrap: packageJson.dependencies.bootstrap,
+        },
       }),
       new HtmlWebPackPlugin({
         template: './src/index.html',
